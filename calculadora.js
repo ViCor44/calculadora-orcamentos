@@ -185,7 +185,10 @@ window.onload = carregarConfiguracoes;
 // FUNÇÕES DO BACKEND (GESTOR DE PREÇOS)
 // ==========================================
 function obterDadosBackend() {
-    return JSON.parse(localStorage.getItem('config_vinil')) || [];
+    if (!localStorage.getItem('config_vinil')) {
+        localStorage.setItem('config_vinil', JSON.stringify(produtos));
+    }
+    return JSON.parse(localStorage.getItem('config_vinil'));
 }
 
 function atualizarListaBackend() {
