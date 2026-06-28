@@ -32,7 +32,16 @@ let produtos = [
 ];
 
 function carregarConfiguracoes() {
-    produtos = JSON.parse(localStorage.getItem('config_vinil')) || [];
+
+  // Altera esta linha para ele dar prioridade à lista fixa se o LocalStorage estiver vazio
+    if (!localStorage.getItem('config_vinil')) {
+        localStorage.setItem('config_vinil', JSON.stringify(produtos));
+    }
+    produtos = JSON.parse(localStorage.getItem('config_vinil'));
+    
+    const select = document.getElementById('cmbProduto');
+    if (!select) return;
+    
     const select = document.getElementById('cmbProduto');
     select.innerHTML = '<option value="">-- Selecione uma Opção --</option>';
 
