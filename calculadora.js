@@ -1,4 +1,7 @@
-let produtos = [
+// ==========================================
+// 1. TABELA DE PREÇOS OFICIAL DE FÁBRICA
+// ==========================================
+var listaProdutosPadrao = [
   { "id": 1, "categoria": "Fotografia", "nome": "Serviço de Fotografia (por Hora)", "tipoCalculo": "horas_fotografia", "preco": 170.00, "margem": 0, "iva": 0 },
   { "id": 2, "categoria": "Grande Formato", "nome": "Vinil Monomérico Impresso", "tipoCalculo": "area_com_extras", "preco": 30.00, "margem": 0, "iva": 0, "permiteExtras": true },
   { "id": 3, "categoria": "Grande Formato", "nome": "Vinil Polimérico Impresso", "tipoCalculo": "area_com_extras", "preco": 45.00, "margem": 0, "iva": 0, "permiteExtras": true },
@@ -10,7 +13,10 @@ let produtos = [
   { "id": 9, "categoria": "Design", "nome": "Design e Formatação", "tipoCalculo": "tempo_design", "preco": 0, "margem": 0, "iva": 0 },
   { "id": 10, "categoria": "Estampagem", "nome": "Estampagem Pequeno Frente", "tipoCalculo": "quantidade", "preco": 4.50, "margem": 0, "iva": 0 },
   { "id": 11, "categoria": "Estampagem", "nome": "Estampagem (até A6)", "tipoCalculo": "quantidade", "preco": 7.50, "margem": 0, "iva": 0 },
-  { "id": 12, "categoria": "Estampagem", "nome": "Estampagem A4", "tipoCalculo": "quantidade", "preco": 15.00, "margem": 0, "iva": 0 },
+  { "id": 12, "categoria": "Estampagem", "nome": "Estampagem A4", "tipoCalculo": "quantidade", "preco": 15.00, "margem": 0, "iva": 0 }
+];
+
+var listaProdutosPadrao2 = [
   { "id": 13, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A4 P&B (1 lado)", "tipoCalculo": "quantidade", "preco": 0.24, "margem": 0, "iva": 0 },
   { "id": 14, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A4 P&B (2 lados)", "tipoCalculo": "quantidade", "preco": 0.38, "margem": 0, "iva": 0 },
   { "id": 15, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A3 P&B (1 lado)", "tipoCalculo": "quantidade", "preco": 0.28, "margem": 0, "iva": 0 },
@@ -31,25 +37,30 @@ let produtos = [
   { "id": 30, "categoria": "Cartões de Visita", "nome": "Cartões Premium (10 dias - Laminação + Canto Redondo)", "tipoCalculo": "quantidade_degrau", "degraus": {"250": 120, "500": 145, "1000": 195}, "margem": 0, "iva": 0 }
 ];
 
-function carregarConfiguracoes() {
+var listaCompletaPadrao = listaProdutosPadrao.concat(listaProdutosPadrao2);
+var produtos = [];
 
-  // Altera esta linha para ele dar prioridade à lista fixa se o LocalStorage estiver vazio
-    if (!localStorage.getItem('config_vinil')) {
-        localStorage.setItem('config_vinil', JSON.stringify(produtos));
+function sincronizarMemoria() {
+    let memoria = localStorage.getItem('config_vinil');
+    if (!memoria || memoria === "[]" || JSON.parse(memoria).length < 5) {
+        localStorage.setItem('config_vinil', JSON.stringify(listaCompletaPadrao));
     }
     produtos = JSON.parse(localStorage.getItem('config_vinil'));
-    
+}
+// ==========================================
+// 2. LOGICA DO FRONTEND - INICIALIZAÇÃO
+// ==========================================
+function carregarConfiguracoes() {
+    sincronizarMemoria();
     const select = document.getElementById('cmbProduto');
     if (!select) return;
     
-    const select = document.getElementById('cmbProduto');
     select.innerHTML = '<option value="">-- Selecione uma Opção --</option>';
-
     let categorias = [...new Set(produtos.map(p => p.categoria))];
+    
     categorias.forEach(cat => {
         let optGroup = document.createElement('optgroup');
         optGroup.label = cat;
-        
         produtos.filter(p => p.categoria === cat).forEach(p => {
             let opt = document.createElement('option');
             opt.value = p.id;
@@ -69,6 +80,7 @@ function ajustarFormulario() {
     if(!idSelecionado) return;
 
     const prod = produtos.find(p => p.id == idSelecionado);
+    if(!prod) return;
     
     if (prod.tipoCalculo === 'area' || prod.tipoCalculo === 'area_com_extras') {
         document.getElementById('painelArea').style.display = 'block';
@@ -88,12 +100,14 @@ function ajustarFormulario() {
         Object.keys(prod.degraus).forEach(qtd => {
             let o = document.createElement('option');
             o.value = prod.degraus[qtd];
-            o.textContent = `${qtd} unidades = ${prod.degraus[qtd]}€`;
+            o.textContent = qtd + " unidades = " + prod.degraus[qtd] + "€";
             sCartoes.appendChild(o);
         });
     }
 }
-
+// ==========================================
+// 3. LOGICA DO FRONTEND - CÁLCULOS
+// ==========================================
 function calcularPrecoFinal() {
     const idSelecionado = document.getElementById('cmbProduto').value;
     if(!idSelecionado) return alert('Por favor, selecione um produto ou serviço.');
@@ -107,20 +121,15 @@ function calcularPrecoFinal() {
         let alt = parseFloat(document.getElementById('altura').value) || 0;
         if(larg <= 0 || alt <= 0) return alert('Insira medidas de largura e altura válidas.');
         
-        // --- NOVA VALIDAÇÃO DE LARGURA MÁXIMA DA BOBINE (127 cm) ---
-        // Se a largura E a altura forem maiores que 1.27m, significa que o trabalho não cabe na bobine sem emendas
         if (larg > 1.27 && alt > 1.27) {
-            alert(`⚠️ Atenção: A largura e a altura (${larg}m x ${alt}m) excedem o limite da bobine de vinil (1.27m).\n\nO trabalho terá de ser impresso em painéis (emendas). O cálculo de m² avançará com esta premissa.`);
+            alert("⚠️ Atenção: A largura e a altura excedem o limite da bobine (1.27m).\n\nO trabalho terá emendas.");
         }
-
         let area = larg * alt;
         precoBaseComercial = area * prod.preco;
-        descricaoBase = `${area.toFixed(2)} m² x ${prod.preco.toFixed(2)}€`;
+        descricaoBase = area.toFixed(2) + " m² x " + prod.preco.toFixed(2) + "€";
 
         if (prod.permiteExtras) {
-            if(document.getElementById('chkAplicar').checked) {
-                precoBaseComercial += (area * prod.preco) * 0.60;
-            }
+            if(document.getElementById('chkAplicar').checked) precoBaseComercial += (area * prod.preco) * 0.60;
             if(document.getElementById('chkCorte').checked) precoBaseComercial += (area * 10);
             if(document.getElementById('chkPelicula').checked) precoBaseComercial += (area * 8);
             if(document.getElementById('chkLaminacao').checked) precoBaseComercial += (area * 15);
@@ -130,18 +139,16 @@ function calcularPrecoFinal() {
         let qtd = parseInt(document.getElementById('quantidade').value) || 0;
         if(qtd <= 0) return alert('A quantidade deve ser igual ou superior a 1.');
         precoBaseComercial = qtd * prod.preco;
-        descricaoBase = `${qtd} un. x ${prod.preco.toFixed(2)}€`;
+        descricaoBase = qtd + " un. x " + prod.preco.toFixed(2) + "€";
     } 
     else if (prod.tipoCalculo === 'horas_fotografia') {
         let horas = parseInt(document.getElementById('horasFotografia').value) || 0;
         if(horas <= 0) return alert('Insira um número válido de horas.');
-        
         let valorHora = 170;
         if(horas >= 6) valorHora = 120;
         else if(horas >= 3) valorHora = 135;
-        
         precoBaseComercial = horas * valorHora;
-        descricaoBase = `${horas} horas (escalão: ${valorHora}€/h)`;
+        descricaoBase = horas + " horas (escalão: " + valorHora + "€/h)";
     } 
     else if (prod.tipoCalculo === 'tempo_design') {
         precoBaseComercial = parseFloat(document.getElementById('tempoDesign').value);
@@ -150,15 +157,13 @@ function calcularPrecoFinal() {
     else if (prod.tipoCalculo === 'pvc_tabela') {
         let acab = document.getElementById('tipoAcabamentoPvc').value;
         let precoM2Pvc = prod.opcoes[acab];
-        if(precoM2Pvc === 0) return alert('Este acabamento não está disponível para esta espessura.');
-        
+        if(precoM2Pvc === 0) return alert('Acabamento indisponível.');
         let larg = parseFloat(document.getElementById('pvcLargura').value) || 0;
         let alt = parseFloat(document.getElementById('pvcAltura').value) || 0;
-        if(larg <= 0 || alt <= 0) return alert('Insira medidas válidas para a placa.');
-        
+        if(larg <= 0 || alt <= 0) return alert('Insira medidas válidas.');
         let area = larg * alt;
         precoBaseComercial = area * precoM2Pvc;
-        descricaoBase = `PVC ${area.toFixed(2)} m² x ${precoM2Pvc.toFixed(2)}€/m²`;
+        descricaoBase = "PVC " + area.toFixed(2) + " m² x " + precoM2Pvc.toFixed(2) + "€/m²";
     } 
     else if (prod.tipoCalculo === 'quantidade_degrau') {
         precoBaseComercial = parseFloat(document.getElementById('cmbQuantidadeCartoes').value);
@@ -166,40 +171,33 @@ function calcularPrecoFinal() {
     }
 
     let subtotal = precoBaseComercial * (1 + (prod.margem / 100));
-    let total = subtotal;
-
     const formatar = (v) => v.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
 
+    document.getElementById('resNomeProduto').textContent = prod.nome;
     document.getElementById('resDetalhe').textContent = descricaoBase;
     document.getElementById('resSubtotal').textContent = formatar(subtotal);
     document.getElementById('resIva').textContent = "0,00 € (Art.º 53º)"; 
-    document.getElementById('resTotal').textContent = formatar(total);    
-    document.getElementById('resNomeProduto').textContent = prod.nome;
-    
+    document.getElementById('resTotal').textContent = formatar(subtotal);
     document.getElementById('blocoResultado').style.display = 'block';
 }
 
-window.onload = carregarConfiguracoes;
-
-// ==========================================
-// FUNÇÕES DO BACKEND (GESTOR DE PREÇOS)
-// ==========================================
-function obterDadosBackend() {
-    if (!localStorage.getItem('config_vinil')) {
-        localStorage.setItem('config_vinil', JSON.stringify(produtos));
-    }
-    return JSON.parse(localStorage.getItem('config_vinil'));
+function imprimirOrcamento() {
+    const tituloOriginal = document.title;
+    document.title = "Orcamento_Comercial";
+    window.print();
+    document.title = tituloOriginal;
 }
-
+// ==========================================
+// 4. LOGICA DO BACKEND - ADMINISTRAÇÃO
+// ==========================================
 function atualizarListaBackend() {
     const lista = document.getElementById('listaProdutos');
-    if (!lista) return; // Proteção para não quebrar no frontend
-
-    const produtosBackend = obterDadosBackend();
+    if (!lista) return;
+    sincronizarMemoria();
     lista.innerHTML = '';
     
-    produtosBackend.forEach((p, index) => {
-        let precoExibicao = p.preco ? `${p.preco.toFixed(2)}€` : 'Tabela complexa';
+    produtos.forEach((p, index) => {
+        let precoExibicao = p.preco ? p.preco.toFixed(2) + "€" : 'Tabela complexa';
         if(p.tipoCalculo === 'pvc_tabela') precoExibicao = "Preço por m² (Múltiplo)";
         if(p.tipoCalculo === 'quantidade_degrau') precoExibicao = "Escalonado por pacotes";
 
@@ -225,36 +223,29 @@ function salvarProduto() {
     const margem = parseFloat(document.getElementById('margem').value) || 0;
     const indexEdicao = parseInt(document.getElementById('indexEdicao').value);
 
-    if (!nome || !category) return alert('Por favor, preencha o nome e a categoria do produto.');
+    if (!nome || !category) return alert('Por favor, preencha o nome e a categoria.');
 
-    const listaProds = obterDadosBackend();
-    
     if (indexEdicao === -1) {
-        let novo = { id: Date.now(), categoria: category, nome, tipoCalculo: "quantidade", preco, margem, iva: 0 };
-        listaProds.push(novo);
+        let novo = { id: Date.now(), categoria: category, nome: nome, tipoCalculo: "quantidade", preco: preco, margem: margem, iva: 0 };
+        produtos.push(novo);
     } else {
-        listaProds[indexEdicao].nome = nome;
-        listaProds[indexEdicao].categoria = category;
-        listaProds[indexEdicao].preco = preco;
-        listaProds[indexEdicao].margem = margem;
-        listaProds[indexEdicao].iva = 0;
+        produtos[indexEdicao].nome = nome;
+        produtos[indexEdicao].categoria = category;
+        produtos[indexEdicao].preco = preco;
+        produtos[indexEdicao].margem = margem;
     }
-    
-    localStorage.setItem('config_vinil', JSON.stringify(listaProds));
+    localStorage.setItem('config_vinil', JSON.stringify(produtos));
     resetarFormulario();
     atualizarListaBackend();
 }
 
 function prepararEdicao(index) {
-    const listaProds = obterDadosBackend();
-    const p = listaProds[index];
-
+    const p = produtos[index];
     document.getElementById('nome').value = p.nome;
     document.getElementById('categoria').value = p.categoria;
     document.getElementById('preco').value = p.preco || 0;
     document.getElementById('margem').value = p.margem;
     document.getElementById('indexEdicao').value = index;
-    
     document.getElementById('tituloForm').textContent = "A Editar Material";
     document.getElementById('btnGravar').textContent = "Confirmar e Atualizar Item";
     document.getElementById('btnGravar').style.background = "linear-gradient(135deg, #d69e2e 0%, #b7791f 100%)";
@@ -273,10 +264,9 @@ function resetarFormulario() {
 }
 
 function apagarProduto(index) {
-    if (confirm("Tem a certeza que deseja eliminar este item do catálogo permanente?")) {
-        const listaProds = obterDadosBackend();
-        listaProds.splice(index, 1);
-        localStorage.setItem('config_vinil', JSON.stringify(listaProds));
+    if (confirm("Deseja eliminar este item?")) {
+        produtos.splice(index, 1);
+        localStorage.setItem('config_vinil', JSON.stringify(produtos));
         resetarFormulario();
         atualizarListaBackend();
     }
@@ -296,30 +286,15 @@ function importarJSON(input) {
     const leitor = new FileReader();
     leitor.onload = function(e) {
         localStorage.setItem('config_vinil', e.target.result);
+        sincronizarMemoria();
         atualizarListaBackend();
-        alert("Catálogo importado e sincronizado com sucesso!");
+        alert("Catálogo atualizado com sucesso!");
     };
-    leitor.readAsText(input.files);
+    leitor.readAsText(input.files[0]);
 }
 
-function imprimirOrcamento() {
-    // Altera temporariamente o título da aba do browser para que o PDF saia com o nome correto
-    const tituloOriginal = document.title;
-    document.title = "Orcamento_Comercial";
-    
-    // Dispara a janela de impressão nativa do sistema (onde pode escolher "Guardar como PDF")
-    window.print();
-    
-    // Restaura o título original após a impressão fechar
-    document.title = tituloOriginal;
-}
-
-// INICIALIZAÇÃO AUTOMÁTICA INTELIGENTE CONSOANTE A PÁGINA ABERTA
 window.onload = function() {
-    if (document.getElementById('cmbProduto')) {
-        carregarConfiguracoes(); // Roda se for o Frontend
-    }
-    if (document.getElementById('listaProdutos')) {
-        atualizarListaBackend(); // Roda se for o Backend
-    }
+    sincronizarMemoria();
+    if (document.getElementById('cmbProduto')) carregarConfiguracoes();
+    if (document.getElementById('listaProdutos')) atualizarListaBackend();
 };
