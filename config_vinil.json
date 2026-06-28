@@ -1,0 +1,39 @@
+[
+  { "id": 1, "categoria": "Fotografia", "nome": "Serviço de Fotografia (por Hora)", "tipoCalculo": "horas_fotografia", "preco": 170.00, "margem": 0, "iva": 23 },
+  
+  { "id": 2, "categoria": "Grande Formato", "nome": "Vinil Monomérico Impresso", "tipoCalculo": "area_com_extras", "preco": 30.00, "margem": 0, "iva": 23, "permiteExtras": true },
+  { "id": 3, "categoria": "Grande Formato", "nome": "Vinil Polimérico Impresso", "tipoCalculo": "area_com_extras", "preco": 45.00, "margem": 0, "iva": 23, "permiteExtras": true },
+  { "id": 4, "categoria": "Grande Formato", "nome": "Vinil Frost", "tipoCalculo": "area", "preco": 25.00, "margem": 0, "iva": 23 },
+  { "id": 5, "categoria": "Grande Formato", "nome": "Lona", "tipoCalculo": "area", "preco": 55.00, "margem": 0, "iva": 23 },
+  { "id": 6, "categoria": "Grande Formato", "nome": "Poster", "tipoCalculo": "area", "preco": 17.00, "margem": 0, "iva": 23 },
+  { "id": 7, "categoria": "Grande Formato", "nome": "Vinil Monomérico para Corte", "tipoCalculo": "area", "preco": 30.00, "margem": 0, "iva": 23 },
+  { "id": 8, "categoria": "Grande Formato", "nome": "Vinil Polimérico para Corte", "tipoCalculo": "area", "preco": 45.00, "margem": 0, "iva": 23 },
+  
+  { "id": 9, "categoria": "Design", "nome": "Design e Formatação", "tipoCalculo": "tempo_design", "preco": 0, "margem": 0, "iva": 23 },
+  
+  { "id": 10, "categoria": "Estampagem", "nome": "Estampagem Pequeno Frente", "tipoCalculo": "quantidade", "preco": 4.50, "margem": 0, "iva": 23 },
+  { "id": 11, "categoria": "Estampagem", "nome": "Estampagem (até A6)", "tipoCalculo": "quantidade", "preco": 7.50, "margem": 0, "iva": 23 },
+  { "id": 12, "categoria": "Estampagem", "nome": "Estampagem A4", "tipoCalculo": "quantidade", "preco": 15.00, "margem": 0, "iva": 23 },
+  
+  { "id": 13, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A4 P&B (1 lado)", "tipoCalculo": "quantidade", "preco": 0.24, "margem": 0, "iva": 23 },
+  { "id": 14, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A4 P&B (2 lados)", "tipoCalculo": "quantidade", "preco": 0.38, "margem": 0, "iva": 23 },
+  { "id": 15, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A3 P&B (1 lado)", "tipoCalculo": "quantidade", "preco": 0.28, "margem": 0, "iva": 23 },
+  { "id": 16, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A3 P&B (2 lados)", "tipoCalculo": "quantidade", "preco": 0.54, "margem": 0, "iva": 23 },
+  { "id": 17, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A4 Cores (1 lado)", "tipoCalculo": "quantidade", "preco": 0.65, "margem": 0, "iva": 23 },
+  { "id": 18, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A4 Cores (2 lados)", "tipoCalculo": "quantidade", "preco": 1.20, "margem": 0, "iva": 23 },
+  { "id": 19, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A3 Cores (1 lado)", "tipoCalculo": "quantidade", "preco": 1.90, "margem": 0, "iva": 23 },
+  { "id": 20, "categoria": "Fotocópias & Encadernação", "nome": "Fotocópia A3 Cores (2 lados)", "tipoCalculo": "quantidade", "preco": 3.70, "margem": 0, "iva": 23 },
+  { "id": 21, "categoria": "Fotocópias & Encadernação", "nome": "Encadernar A4", "tipoCalculo": "quantidade", "preco": 5.00, "margem": 0, "iva": 23 },
+  
+  { "id": 22, "categoria": "Álbuns", "nome": "Álbum 15x10cm (12 pág.)", "tipoCalculo": "quantidade", "preco": 120.00, "margem": 0, "iva": 23 },
+  { "id": 23, "categoria": "Álbuns", "nome": "Álbum 20x30cm Panorâmico (20 pág.)", "tipoCalculo": "quantidade", "preco": 180.00, "margem": 0, "iva": 23 },
+  { "id": 24, "categoria": "Álbuns", "nome": "Álbum 23x30cm (40 pág.)", "tipoCalculo": "quantidade", "preco": 250.00, "margem": 0, "iva": 23 },
+  { "id": 25, "categoria": "Álbuns", "nome": "Álbum Quadrado 30x30cm (20 pág.)", "tipoCalculo": "quantidade", "preco": 280.00, "margem": 0, "iva": 23 },
+  
+  { "id": 26, "categoria": "Placas PVC", "nome": "Placa PVC 3mm", "tipoCalculo": "pvc_tabela", "opcoes": {"so_pvc": 17.50, "pvc_vinil": 27.50, "pvc_uv": 31.50}, "margem": 0, "iva": 23 },
+  { "id": 27, "categoria": "Placas PVC", "nome": "Placa PVC 5mm", "tipoCalculo": "pvc_tabela", "opcoes": {"so_pvc": 22.50, "pvc_vinil": 32.50, "pvc_uv": 37.50}, "margem": 0, "iva": 23 },
+  { "id": 28, "categoria": "Placas PVC", "nome": "Placa PVC 10mm", "tipoCalculo": "pvc_tabela", "opcoes": {"so_pvc": 35.00, "pvc_vinil": 45.00, "pvc_uv": 0}, "margem": 0, "iva": 23 },
+  
+  { "id": 29, "categoria": "Cartões de Visita", "nome": "Cartões Expressos (24h - 2 lados)", "tipoCalculo": "quantidade_degrau", "degraus": {"100": 48, "250": 65, "500": 95, "1000": 115}, "margem": 0, "iva": 23 },
+  { "id": 30, "categoria": "Cartões de Visita", "nome": "Cartões Premium (10 dias - Laminação + Canto Redondo)", "tipoCalculo": "quantidade_degrau", "degraus": {"250": 120, "500": 145, "1000": 195}, "margem": 0, "iva": 23 }
+]
