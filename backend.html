@@ -1,296 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuração Global do Sistema</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        body { 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            padding: 40px 20px;
-        }
-        .admin-card { 
-            background: #ffffff; 
-            width: 100%; 
-            max-width: 750px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
-            padding: 35px; 
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-        h2 { color: #1a202c; font-size: 24px; font-weight: 700; margin-bottom: 6px; text-align: center; }
-        .subtitulo { color: #718096; font-size: 14px; text-align: center; margin-bottom: 25px; }
-        h3 { color: #2d3748; font-size: 18px; font-weight: 600; margin: 25px 0 12px 0; border-bottom: 2px solid #edf2f7; padding-bottom: 8px; }
-        
-        /* Formulário de Adição */
-        .form-add { 
-            background: #f7fafc; 
-            padding: 20px; 
-            border-radius: 10px; 
-            margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
-        }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .campo { margin-bottom: 12px; }
-        label { display: block; color: #4a5568; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-        input, select { 
-            width: 100%; 
-            padding: 10px 12px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 8px; 
-            font-size: 14px; 
-            color: #2d3748; 
-            background-color: #ffffff; 
-            outline: none; 
-            transition: all 0.2s ease; 
-        }
-        input:focus, select:focus { border-color: #3182ce; background-color: #ffffff; }
-        
-        .btn-primary { 
-            width: 100%; 
-            padding: 12px; 
-            background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%); 
-            color: #ffffff; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 15px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.2s ease;
-            margin-top: 5px;
-        }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3); }
-        .btn-success { 
-            background: linear-gradient(135deg, #28a745 0%, #218838 100%); 
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
-        }
-        .btn-success:hover { box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35); }
-        .btn-danger { 
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); 
-        }
-        .btn-danger:hover { box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3); }
-        
-        .zona-ficheiros { display: flex; gap: 12px; margin: 15px 0; padding: 15px; background: #f7fafc; border-radius: 10px; border: 1px dashed #cbd5e0; }
-        .btn-ficheiro { 
-            flex: 1; 
-            padding: 10px; 
-            background: #e2e8f0; 
-            color: #4a5568; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.2s ease; 
-        }
-        .btn-ficheiro:hover { background: #cbd5e0; color: #2d3748; }
-        #inputImportar { display: none; }
-
-        /* Lista de Itens */
-        ul { list-style: none; max-height: 400px; overflow-y: auto; padding-right: 5px; }
-        ul::-webkit-scrollbar { width: 6px; }
-        ul::-webkit-scrollbar-thumb { background-color: #cbd5e0; border-radius: 4px; }
-
-        li { 
-            background: #f8fafc; 
-            padding: 12px 16px; 
-            margin-bottom: 8px; 
-            border: 1px solid #edf2f7; 
-            border-left: 4px solid #3182ce; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-radius: 6px; 
-        }
-        .item-info { font-size: 13.5px; color: #4a5568; line-height: 1.4; flex: 1; }
-        .item-info strong { color: #1a202c; }
-        .badge { 
-            background: #e2e8f0; 
-            color: #4a5568; 
-            font-size: 11px; 
-            padding: 2px 8px; 
-            border-radius: 4px; 
-            font-weight: bold; 
-            margin-right: 4px; 
-            display: inline-block;
-            margin-bottom: 2px;
-        }
-        .badge-tipo { 
-            background: #bee3f8; 
-            color: #2b6cb0; 
-            font-size: 10px; 
-            padding: 2px 8px; 
-            border-radius: 4px; 
-            font-weight: bold; 
-        }
-        .acoes { display: flex; gap: 6px; flex-wrap: wrap; }
-        .btn-acao { 
-            padding: 4px 10px; 
-            border: none; 
-            border-radius: 4px; 
-            font-size: 11px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.2s ease; 
-        }
-        .btn-editar { background: #feebc8; color: #c05621; }
-        .btn-editar:hover { background: #fbd38d; }
-        .btn-apagar { background: #fed7d7; color: #9b2c2c; }
-        .btn-apagar:hover { background: #feb2b2; }
-        .btn-duplicar { background: #e9d8fd; color: #6b46c1; }
-        .btn-duplicar:hover { background: #d6bcfa; }
-
-        .link-retorno { display: block; text-align: center; margin-top: 25px; color: #3182ce; font-weight: 600; font-size: 14px; text-decoration: none; transition: color 0.2s; }
-        .link-retorno:hover { color: #2b6cb0; text-decoration: underline; }
-
-        /* Modal de Edição */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .modal-header h3 { margin: 0; border: none; }
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #718096;
-            padding: 0 10px;
-        }
-        .modal-close:hover { color: #2d3748; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuração Global do Sistema</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}body{background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:40px 20px}.admin-card{background:#fff;width:100%;max-width:850px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:35px;border:1px solid rgba(255,255,255,.8)}h2{color:#1a202c;font-size:24px;font-weight:700;margin-bottom:6px;text-align:center}.subtitulo{color:#718096;font-size:14px;text-align:center;margin-bottom:25px}h3{color:#2d3748;font-size:18px;font-weight:600;margin:25px 0 12px;border-bottom:2px solid #edf2f7;padding-bottom:8px}.form-add{background:#f7fafc;padding:20px;border-radius:10px;margin-bottom:20px;border:1px solid #e2e8f0}.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.campo{margin-bottom:12px}label{display:block;color:#4a5568;font-size:13px;font-weight:600;margin-bottom:4px}input,select{width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;color:#2d3748;background:#fff;outline:none}input:focus,select:focus{border-color:#3182ce}.btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,#3182ce 0%,#2b6cb0 100%);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s ease;margin-top:5px}.btn-success{background:linear-gradient(135deg,#28a745 0%,#218838 100%)}.zona-ficheiros{display:flex;gap:12px;margin:15px 0;padding:15px;background:#f7fafc;border-radius:10px;border:1px dashed #cbd5e0;flex-wrap:wrap}.btn-ficheiro{flex:1;min-width:170px;padding:10px;background:#e2e8f0;color:#4a5568;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}#inputImportar{display:none}ul{list-style:none;max-height:450px;overflow-y:auto;padding-right:5px}li{background:#f8fafc;padding:12px 16px;margin-bottom:8px;border:1px solid #edf2f7;border-left:4px solid #3182ce;display:flex;justify-content:space-between;gap:12px;align-items:center;border-radius:6px}.item-info{font-size:13.5px;color:#4a5568;line-height:1.4;flex:1}.item-info strong{color:#1a202c}.badge{background:#e2e8f0;color:#4a5568;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:bold;margin-right:4px;display:inline-block;margin-bottom:2px}.badge-tipo{background:#bee3f8;color:#2b6cb0;font-size:10px;padding:2px 8px;border-radius:4px;font-weight:bold}.acoes{display:flex;gap:6px;flex-wrap:wrap}.btn-acao{padding:4px 10px;border:none;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer}.btn-editar{background:#feebc8;color:#c05621}.btn-apagar{background:#fed7d7;color:#9b2c2c}.btn-duplicar{background:#e9d8fd;color:#6b46c1}.link-retorno{display:block;text-align:center;margin-top:25px;color:#3182ce;font-weight:600;font-size:14px;text-decoration:none}.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center}.modal-overlay.active{display:flex}.modal-content{background:#fff;padding:30px;border-radius:16px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.modal-header h3{margin:0;border:none}.modal-close{background:none;border:none;font-size:28px;cursor:pointer;color:#718096;padding:0 10px}.aviso{padding:12px;border-radius:8px;margin-bottom:15px;font-size:13px;font-weight:600;text-align:center;border:1px solid #bee3f8;background:#ebf8ff;color:#2b6cb0}.aviso.erro{background:#fefcbf;color:#975a16;border-color:#f6e05e}@media(max-width:650px){.admin-card{padding:22px}.grid-2,.grid-3{grid-template-columns:1fr}li{display:block}.acoes{margin-top:10px}}
+  </style>
 </head>
 <body>
-    <div class="admin-card">
-        <h2>Gestão de Tabelas e Preços</h2>
-        <div class="subtitulo">Configure as margens e faça a gestão do catálogo</div>
-        
-        <!-- FORMULÁRIO PARA ADICIONAR NOVO ITEM -->
-        <div class="form-add">
-            <h3 style="margin-top: 0; border-bottom: none; padding-bottom: 0;">➕ Adicionar Novo Item</h3>
-            <div class="grid-3">
-                <div class="campo">
-                    <label for="novoCategoria">Categoria</label>
-                    <input type="text" id="novoCategoria" placeholder="Ex: Impressão">
-                </div>
-                <div class="campo">
-                    <label for="novoNome">Nome do Produto</label>
-                    <input type="text" id="novoNome" placeholder="Ex: Cartaz A3">
-                </div>
-                <div class="campo">
-                    <label for="novoTipo">Tipo de Cálculo</label>
-                    <select id="novoTipo">
-                        <option value="quantidade">Quantidade (Preço unitário)</option>
-                        <option value="area">Área (m²)</option>
-                        <option value="area_com_extras">Área com Extras</option>
-                        <option value="horas_fotografia">Horas de Fotografia</option>
-                        <option value="tempo_design">Tempo de Design</option>
-                        <option value="pvc_tabela">PVC (Tabela)</option>
-                        <option value="quantidade_degrau">Quantidade Escalonada</option>
-                    </select>
-                </div>
-            </div>
-            <div class="grid-2">
-                <div class="campo">
-                    <label for="novoPreco">Preço Base (€)</label>
-                    <input type="number" id="novoPreco" step="0.01" placeholder="0.00">
-                </div>
-                <div class="campo">
-                    <label for="novaMargem">Margem (%)</label>
-                    <input type="number" id="novaMargem" step="0.1" value="0" placeholder="0">
-                </div>
-            </div>
-            <button class="btn-primary btn-success" onclick="adicionarItem()">➕ Adicionar ao Catálogo</button>
-        </div>
+  <div class="admin-card">
+    <h2>Gestão de Tabelas e Preços</h2>
+    <div class="subtitulo">Os preços vêm do Google Sheets. Alterações feitas aqui são locais/exportáveis.</div>
+    <div id="estadoApp" class="aviso">A carregar dados...</div>
 
-        <!-- ZONA DE BACKUP -->
-        <div class="zona-ficheiros">
-            <button class="btn-ficheiro" onclick="exportarJSON()">💾 Guardar Backup (.json)</button>
-            <button class="btn-ficheiro" onclick="document.getElementById('inputImportar').click()">📂 Importar Ficheiro</button>
-            <button class="btn-ficheiro" onclick="sincronizarGoogleSheets()">🔄 Sincronizar com Google</button>
-            <input type="file" id="inputImportar" accept=".json" onchange="importarJSON(this)">
-        </div>
-
-        <h3>📋 Catálogo de Itens Ativos</h3>
-        <ul id="listaProdutos"></ul>
-        
-        <a href="index.html" class="link-retorno">&larr; Voltar para a Calculadora Principal</a>
+    <div class="form-add">
+      <h3 style="margin-top:0;border-bottom:none;padding-bottom:0">➕ Adicionar Novo Item Local</h3>
+      <div class="grid-3">
+        <div class="campo"><label for="novoCategoria">Categoria</label><input type="text" id="novoCategoria" placeholder="Ex: Impressão"></div>
+        <div class="campo"><label for="novoNome">Nome do Produto</label><input type="text" id="novoNome" placeholder="Ex: Cartaz A3"></div>
+        <div class="campo"><label for="novoTipo">Tipo de Cálculo</label><select id="novoTipo"><option value="quantidade">Quantidade</option><option value="area">Área (m²)</option><option value="area_com_extras">Área com Extras</option><option value="horas_fotografia">Horas de Fotografia</option><option value="tempo_design">Tempo de Design</option><option value="pvc_tabela">PVC (Tabela)</option><option value="quantidade_degrau">Quantidade Escalonada</option></select></div>
+      </div>
+      <div class="grid-2"><div class="campo"><label for="novoPreco">Preço Base (€)</label><input type="number" id="novoPreco" step="0.01" placeholder="0.00"></div><div class="campo"><label for="novaMargem">Margem (%)</label><input type="number" id="novaMargem" step="0.1" value="0" placeholder="0"></div></div>
+      <button class="btn-primary btn-success" onclick="adicionarItem()">➕ Adicionar ao Catálogo Local</button>
     </div>
 
-    <!-- MODAL DE EDIÇÃO -->
-    <div class="modal-overlay" id="modalEdicao">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>✏️ Editar Item</h3>
-                <button class="modal-close" onclick="fecharModal()">&times;</button>
-            </div>
-            <input type="hidden" id="editId">
-            <div class="campo">
-                <label>Categoria</label>
-                <input type="text" id="editCategoria">
-            </div>
-            <div class="campo">
-                <label>Nome do Produto</label>
-                <input type="text" id="editNome">
-            </div>
-            <div class="campo">
-                <label>Tipo de Cálculo</label>
-                <select id="editTipo">
-                    <option value="quantidade">Quantidade (Preço unitário)</option>
-                    <option value="area">Área (m²)</option>
-                    <option value="area_com_extras">Área com Extras</option>
-                    <option value="horas_fotografia">Horas de Fotografia</option>
-                    <option value="tempo_design">Tempo de Design</option>
-                    <option value="pvc_tabela">PVC (Tabela)</option>
-                    <option value="quantidade_degrau">Quantidade Escalonada</option>
-                </select>
-            </div>
-            <div class="grid-2">
-                <div class="campo">
-                    <label>Preço Base (€)</label>
-                    <input type="number" id="editPreco" step="0.01">
-                </div>
-                <div class="campo">
-                    <label>Margem (%)</label>
-                    <input type="number" id="editMargem" step="0.1">
-                </div>
-            </div>
-            <button class="btn-primary" onclick="salvarEdicao()" style="margin-top: 10px;">💾 Salvar Alterações</button>
-            <button class="btn-ficheiro" onclick="fecharModal()" style="margin-top: 10px; width: 100%;">Cancelar</button>
-        </div>
+    <div class="zona-ficheiros">
+      <button class="btn-ficheiro" onclick="exportarJSON()">💾 Guardar Backup (.json)</button>
+      <button class="btn-ficheiro" onclick="document.getElementById('inputImportar').click()">📂 Importar Backup</button>
+      <button class="btn-ficheiro" onclick="sincronizarGoogleSheets()">🔄 Recarregar Google Sheets</button>
+      <button class="btn-ficheiro" onclick="abrirGoogleSheets()">📊 Abrir Folha</button>
+      <input type="file" id="inputImportar" accept=".json" onchange="importarJSON(this)">
     </div>
 
-    <script src="calculadora.js"></script>
+    <h3>📋 Catálogo de Itens Ativos</h3>
+    <ul id="listaProdutos"></ul>
+    <a href="index.html" class="link-retorno">&larr; Voltar para a Calculadora Principal</a>
+  </div>
+
+  <div class="modal-overlay" id="modalEdicao"><div class="modal-content"><div class="modal-header"><h3>✏️ Editar Item Local</h3><button class="modal-close" onclick="fecharModal()">&times;</button></div><input type="hidden" id="editId"><div class="campo"><label>Categoria</label><input type="text" id="editCategoria"></div><div class="campo"><label>Nome do Produto</label><input type="text" id="editNome"></div><div class="campo"><label>Tipo de Cálculo</label><select id="editTipo"><option value="quantidade">Quantidade</option><option value="area">Área</option><option value="area_com_extras">Área com Extras</option><option value="horas_fotografia">Horas de Fotografia</option><option value="tempo_design">Tempo de Design</option><option value="pvc_tabela">PVC</option><option value="quantidade_degrau">Quantidade Escalonada</option></select></div><div class="grid-2"><div class="campo"><label>Preço Base (€)</label><input type="number" id="editPreco" step="0.01"></div><div class="campo"><label>Margem (%)</label><input type="number" id="editMargem" step="0.1"></div></div><button class="btn-primary" onclick="salvarEdicao()">💾 Guardar Alterações Locais</button><button class="btn-ficheiro" onclick="fecharModal()" style="margin-top:10px;width:100%">Cancelar</button></div></div>
+  <script src="calculadora.js"></script>
 </body>
 </html>
