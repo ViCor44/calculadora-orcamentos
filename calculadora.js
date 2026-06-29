@@ -1,40 +1,40 @@
 // ===================================================
-// 1. LIGAÇÃO À BASE DE DADOS ONLINE (GOOGLE SHEETS)
+// 1. BASE DE DADOS ONLINE (GOOGLE SHEETS) E SCRIPT
 // ===================================================
-const LINK_GOOGLE_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMQOvHd-nDikUNboQ_kvo3OVh3Wo_C1xIsVV8qQ4wRU6TEIt0snHPIxdZ2Dema-k4x0FqlZR4JJEZx/pub?output=csv";
+const LINK_GOOGLE_SHEETS = "https://google.com";
 
 let produtos = [];
 
-// Tabelas internas fixas para estruturas complexas
 const opcoesPvc = {
-    26: {"so_pvc": 17.50, "pvc_vinil": 27.50, "pvc_uv": 31.50}, // 3mm
-    27: {"so_pvc": 22.50, "pvc_vinil": 32.50, "pvc_uv": 37.50}, // 5mm
-    28: {"so_pvc": 35.00, "pvc_vinil": 45.00, "pvc_uv": 0}       // 10mm
+    26: {"so_pvc": 17.50, "pvc_vinil": 27.50, "pvc_uv": 31.50},
+    27: {"so_pvc": 22.50, "pvc_vinil": 32.50, "pvc_uv": 37.50},
+    28: {"so_pvc": 35.00, "pvc_vinil": 45.00, "pvc_uv": 0}
 };
 
 const degrausCartoes = {
-    29: {"100": 48, "250": 65, "500": 95, "1000": 115},          // Expressos
-    30: {"250": 120, "500": 145, "1000": 195}                    // Premium
+    29: {"100": 48, "250": 65, "500": 95, "1000": 115},
+    30: {"250": 120, "500": 145, "1000": 195}
 };
 
-async function carregarDadosOnline() {
-    const select = document.getElementById('cmbProduto');
-    if (!select) return;
-
+async function carregarDadosDoGoogleSheets(tipoEcra) {
     try {
-        // Força o descarregamento de dados frescos limpando a cache do browser
         const resposta = await fetch(LINK_GOOGLE_SHEETS + "&cachebust=" + Date.now());
         const textoCsv = await resposta.text();
-        
         produtos = converterCsvParaJson(textoCsv);
-        desenharMenuDropdown(select);
+        
+        if (tipoEcra === "front") {
+            const select = document.getElementById('cmbProduto');
+            if (select) desMenuDropdown(select);
+        } else if (tipoEcra === "back") {
+            const lista = document.getElementById('listaProdutos');
+            if (lista) atualizarListaBackendNuvemCorrigida(lista);
+        }
     } catch (erro) {
         console.error("Erro na sincronização:", erro);
     }
 }
 
 function converterCsvParaJson(csv) {
-    // Divide o ficheiro por linhas
     const linhas = csv.split("\n");
     const resultado = [];
     
@@ -42,17 +42,12 @@ function converterCsvParaJson(csv) {
         let linha = linhas[i].trim();
         if (!linha) continue;
         
-        // CORREÇÃO DETETOR DE SEPARADOR: Deteta se o Google enviou o ficheiro com ; ou ,
         const separador = linha.includes(";") ? ";" : ",";
-        
-        // Divide as colunas de forma limpa
         const colunas = linha.split(separador);
         if (colunas.length < 5) continue;
 
         let idItem = parseInt(colunas[0]);
         let tipoCalc = colunas[3].replace(/"/g, "").trim();
-
-        // Tratamento para números com vírgula decimal europeia (ex: 170,00 -> 170.00)
         let precoLimpo = colunas[4].replace(/"/g, "").replace(",", ".").trim();
         let margemLimpa = colunas[5].replace(/"/g, "").replace(",", ".").trim();
 
@@ -75,10 +70,7 @@ function converterCsvParaJson(csv) {
     return resultado;
 }
 
-// ===================================================
-// 2. CONSTRUÇÃO VISUAL DINÂMICA DO FORMULÁRIO
-// ===================================================
-function desenharMenuDropdown(select) {
+function desMenuDropdown(select) {
     select.innerHTML = '<option value="">-- Selecione uma Opção --</option>';
     let categorias = [...new Set(produtos.map(p => p.categoria))];
     
@@ -130,7 +122,7 @@ function ajustarFormulario() {
     }
 }
 // ===================================================
-// 3. FÓRMULAS DE CÁLCULO FINANCEIRO E IMPRESSÃO
+// 2. FÓRMULAS DE CÁLCULO FINANCEIRO E BACKEND
 // ===================================================
 function calcularPrecoFinal() {
     const idSelecionado = document.getElementById('cmbProduto').value;
@@ -212,44 +204,14 @@ function imprimirOrcamento() {
     document.title = tituloOriginal;
 }
 
-// Gatilhos de Inicialização Inteligente (Nuvem)
-window.onload = carDadosOnline;
-window.addEventListener('pageshow', carDadosOnline);
-window.addEventListener('focus', carDadosOnline);
-
-function carDadosOnline() {
-    if (document.getElementById('cmbProduto')) carregarDadosOnline();
-}
-// ===================================================
-// 4. ADAPTAÇÃO DO PAINEL DE ADMINISTRAÇÃO (NUVEM)
-// ===================================================
-async function carregarDadosOnlineBackend() {
-    const lista = document.getElementById('listaProdutos');
-    if (!lista) return;
-
-    try {
-        if (produtos.length === 0) {
-            const resposta = await fetch(LINK_GOOGLE_SHEETS + "&cachebust=" + Date.now());
-            const textoCsv = await resposta.text();
-            produtos = converterCsvParaJson(textoCsv);
-        }
-        
-        atualizarListaBackendNuvem(lista);
-    } catch (erro) {
-        console.error("Erro ao carregar lista no backend:", erro);
-    }
-}
-
-function atualizarListaBackendNuvem(lista) {
-    // 1. LIMPEZA SEGURA: Remove qualquer aviso azul antigo antes de desenhar
-    const avisoAntigo = document.getElementById('avisoSincronizacao');
+function atualizarListaBackendNuvemCorrigida(lista) {
+    const avisoAntigo = document.getElementById('avisoSincronizacaoUnico');
     if (avisoAntigo) avisoAntigo.remove();
 
     lista.innerHTML = '';
     
-    // 2. CRIAÇÃO DO AVISO: Cria o aviso azul com um ID fixo para nunca duplicar
     const alerta = document.createElement('div');
-    alerta.id = 'avisoSincronizacao';
+    alerta.id = 'avisoSincronizacaoUnico';
     alerta.style.cssText = "background: #ebf8ff; color: #2b6cb0; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; font-weight: 600; text-align: center; border: 1px solid #bee3f8;";
     alerta.innerHTML = "💡 Os preços estão sincronizados com o Google Sheets. Altere os valores diretamente na sua folha de cálculo online para atualizar todos os telemóveis.";
     lista.parentNode.insertBefore(alerta, lista);
@@ -267,19 +229,23 @@ function atualizarListaBackendNuvem(lista) {
                     <small style="color: #718096;">Valor Online: ${precoExibicao} | Isento (Art.º 53º)</small>
                 </div>
                 <div class="acoes">
-                    <button class="btn-editar" onclick="abrirGoogleSheets()" style="background: #cbd5e0; color: #2d3748;">Ver no Google</button>
+                    <button class="btn-editar" onclick="abrirMinhaFolhaPrivada()" style="background: #cbd5e0; color: #2d3748;">Ver no Google</button>
                 </div>
             </li>`;
     });
 }
 
-function abrirGoogleSheets() {
-    // COLA O TEU LINK DE EDIÇÃO DIRETAMENTE ENTRE AS ASPAS:
+function abrirMinhaFolhaPrivada() {
+    // ABRE A SUA FOLHA DE EDIÇÃO CORRETA
     window.open("https://docs.google.com/spreadsheets/d/18hBRKP0iEKiRgCRkICcTgWFCTougR_HcsXvcBkmD1ak/edit?usp=sharing", "_blank");
 }
 
-// Inicialização e gatilhos corrigidos sem repetições infinitas
-function carDadosOnline() {
-    if (document.getElementById('cmbProduto')) carregarDadosOnline();
-    if (document.getElementById('listaProdutos')) carregarDadosOnlineBackend();
+// Gatilhos globais inteligentes unificados para ambas as páginas
+function dispararCargaDeDados() {
+    if (document.getElementById('cmbProduto')) carregarDadosDoGoogleSheets("front");
+    if (document.getElementById('listaProdutos')) carregarDadosDoGoogleSheets("back");
 }
+
+window.onload = dispararCargaDeDados;
+window.addEventListener('pageshow', dispararCargaDeDados);
+window.addEventListener('focus', dispararCargaDeDados);
