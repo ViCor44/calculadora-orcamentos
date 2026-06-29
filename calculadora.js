@@ -267,7 +267,7 @@ function atualizarListaBackendNuvem(lista) {
 
 function abrirGoogleSheets() {
     // COLA O TEU LINK DE EDIÇÃO DIRETAMENTE ENTRE AS ASPAS:
-    window.open("https://docs.google.com/spreadsheets/d/e/2PACX-1vRMQOvHd-nDikUNboQ_kvo3OVh3Wo_C1xIsVV8qQ4wRU6TEIt0snHPIxdZ2Dema-k4x0FqlZR4JJEZx/pubhtml", "_blank");
+    window.open("https://docs.google.com/spreadsheets/d/18hBRKP0iEKiRgCRkICcTgWFCTougR_HcsXvcBkmD1ak/edit?usp=sharing", "_blank");
 }
 
 // Inicialização e gatilhos corrigidos sem repetições infinitas
