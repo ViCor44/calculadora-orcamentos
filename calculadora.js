@@ -294,17 +294,26 @@ function importarJSON(input) {
     leitor.readAsText(input.files[0]);
 }
 
-// INICIALIZAÇÃO ATUALIZADA: Deteta sempre que a página fica visível no ecrã
+// Função que lê os dados e atualiza os ecrãs
 function inicializarPorPagina() {
     sincronizarMemoria();
-    if (document.getElementById('cmbProduto')) carregarConfiguracoes();
-    if (document.getElementById('listaProdutos')) atualizarListaBackend();
+    if (document.getElementById('cmbProduto')) {
+        carregarConfiguracoes();
+    }
+    if (document.getElementById('listaProdutos')) {
+        atualizarListaBackend();
+    }
 }
 
-// Roda ao carregar a página pela primeira vez
+// Executa quando a página é carregada pela primeira vez
 window.onload = inicializarPorPagina;
 
-// NOVO: Força a atualização automática quando volta para trás através do link
-window.onpageshow = function(event) {
+// Executa sempre que a página volta a aparecer no ecrã (vindo do botão "Voltar")
+window.addEventListener('pageshow', function() {
     inicializarPorPagina();
-};
+});
+
+// Executa sempre que toca no ecrã ou muda de aba (truque infalível para telemóveis)
+window.addEventListener('focus', function() {
+    inicializarPorPagina();
+});
