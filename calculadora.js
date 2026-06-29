@@ -42,7 +42,8 @@ var produtos = [];
 
 function sincronizarMemoria() {
     let memoria = localStorage.getItem('config_vinil');
-    if (!memoria || memoria === "[]" || JSON.parse(memoria).length < 5) {
+    // SÓ injeta os produtos de fábrica se a memória não existir ou estiver totalmente vazia
+    if (!memoria || memoria === "[]") {
         localStorage.setItem('config_vinil', JSON.stringify(listaCompletaPadrao));
     }
     produtos = JSON.parse(localStorage.getItem('config_vinil'));
