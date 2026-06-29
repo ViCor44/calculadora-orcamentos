@@ -157,24 +157,6 @@ function calcularPrecoFinal() {
         precoBaseComercial = qtd * prod.preco;
         descricaoBase = qtd + " un. x " + prod.preco.toFixed(2) + "€";
     } 
-    else if (prod.tipoCalculo === 'horas_fotografia') {
-        let horas = parseInt(document.getElementById('horasFotografia').value) || 0;
-        if(horas <= 0) return alert('Insira um número válido de horas.');
-        
-        // CORREÇÃO: Vai buscar o preço base diretamente à folha (ex: 175€)
-        let valorHora = prod.preco; 
-        
-        // Aplica os descontos de balcão com base no valor da folha
-        if(horas >= 6) {
-            valorHora = parseFloat((prod.preco * 0.7058).toFixed(2)); // Proporção para os 120€
-        } else if(horas >= 3) {
-            valorHora = parseFloat((prod.preco * 0.7941).toFixed(2)); // Proporção para os 135€
-        }
-        
-        precoBaseComercial = horas * valorHora;
-        descricaoBase = horas + " horas (escalão: " + valorHora + "€/h)";
-    }
-
     else if (prod.tipoCalculo === 'tempo_design') {
         precoBaseComercial = parseFloat(document.getElementById('tempoDesign').value);
         descricaoBase = "Preço por bloco de tempo";
