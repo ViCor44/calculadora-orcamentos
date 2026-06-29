@@ -263,7 +263,7 @@ function atualizarListaBackendNuvem(lista) {
 }
 
 function abrirGoogleSheets() {
-    // Abre a folha de cálculo oficial para que possa editar os preços rapidamente
+    // Abre exatamente a sua folha de cálculo privada para poder editar os preços
     window.open("https://google.com", "_blank");
 }
 
