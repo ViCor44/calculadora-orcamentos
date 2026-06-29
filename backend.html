@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuração Global do Sistema</title>
     <style>
-        /* Reset de Estilos Básicos */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        
-        /* Fundo moderno igual ao frontend */
         body { 
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
             min-height: 100vh; 
@@ -17,8 +14,6 @@
             align-items: center; 
             padding: 40px 20px;
         }
-
-        /* Cartão Principal */
         .admin-card { 
             background: #ffffff; 
             width: 100%; 
@@ -28,97 +23,32 @@
             padding: 35px; 
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
-
-        /* Títulos */
         h2 { color: #1a202c; font-size: 24px; font-weight: 700; margin-bottom: 6px; text-align: center; }
         .subtitulo { color: #718096; font-size: 14px; text-align: center; margin-bottom: 25px; }
         h3 { color: #2d3748; font-size: 18px; font-weight: 600; margin: 25px 0 12px 0; border-bottom: 2px solid #edf2f7; padding-bottom: 8px; }
-        
-        /* Formulário */
-        .campo { margin-bottom: 16px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        label { display: block; color: #4a5568; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-        input, select { width: 100%; padding: 11px 14px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; color: #2d3748; background-color: #f8fafc; outline: none; transition: all 0.2s ease; }
-        input:focus, select:focus { border-color: #3182ce; background-color: #ffffff; }
-        
-        /* Botões */
-        button { font-size: 15px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
-        
-        .btn-gravar { width: 100%; padding: 14px; background: linear-gradient(135deg, #28a745 0%, #218838 100%); color: #ffffff; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25); margin-top: 10px; }
-        .btn-gravar:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35); }
-        
-        /* Zona de Backup e Ficheiros */
         .zona-ficheiros { display: flex; gap: 12px; margin: 20px 0; padding: 15px; background: #f7fafc; border-radius: 10px; border: 1px dashed #cbd5e0; }
-        .btn-ficheiro { width: 50%; padding: 10px; background: #e2e8f0; color: #4a5568; font-size: 13px; }
+        .btn-ficheiro { width: 50%; padding: 10px; background: #e2e8f0; color: #4a5568; font-size: 13px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s ease; }
         .btn-ficheiro:hover { background: #cbd5e0; color: #2d3748; }
         #inputImportar { display: none; }
-
-        /* Lista de Itens Configurados */
         ul { list-style: none; max-height: 250px; overflow-y: auto; padding-right: 5px; }
         ul::-webkit-scrollbar { width: 6px; }
         ul::-webkit-scrollbar-thumb { background-color: #cbd5e0; border-radius: 4px; }
-
         li { background: #f8fafc; padding: 12px 16px; margin-bottom: 8px; border: 1px solid #edf2f7; border-left: 4px solid #3182ce; display: flex; justify-content: space-between; align-items: center; border-radius: 6px; }
         .item-info { font-size: 13.5px; color: #4a5568; line-height: 1.4; }
         .item-info strong { color: #1a202c; }
         .badge { background: #e2e8f0; color: #4a5568; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-right: 4px; }
-        
-        /* Ações da Lista */
         .acoes { display: flex; gap: 6px; }
-        .btn-editar { background: #feebc8; color: #c05621; padding: 6px 12px; font-size: 12px; }
+        .btn-editar { background: #feebc8; color: #c05621; padding: 6px 12px; font-size: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
         .btn-editar:hover { background: #fbd38d; }
-        .btn-apagar { background: #fed7d7; color: #9b2c2c; padding: 6px 12px; font-size: 12px; }
-        .btn-apagar:hover { background: #feb2b2; }
-
-        /* Link de Retorno */
         .link-retorno { display: block; text-align: center; margin-top: 25px; color: #3182ce; font-weight: 600; font-size: 14px; text-decoration: none; transition: color 0.2s; }
         .link-retorno:hover { color: #2b6cb0; text-decoration: underline; }
     </style>
 </head>
 <body>
-
     <div class="admin-card">
-        <h2 id="tituloForm">Gestão de Tabelas e Preços</h2>
+        <h2>Gestão de Tabelas e Preços</h2>
         <div class="subtitulo">Configure as margens e faça a gestão do catálogo</div>
         
-        <input type="hidden" id="indexEdicao" value="-1">
-
-        <!-- Linha 1: Nome -->
-        <div class="campo">
-            <label for="nome">Nome do Produto / Serviço</label>
-            <input type="text" id="nome" placeholder="Ex: Vinil Monomérico Impresso">
-        </div>
-
-        <!-- Linha 2: Categoria e Preço -->
-        <div class="grid-2">
-            <div class="campo">
-                <label for="categoria">Categoria</label>
-                <input type="text" id="categoria" placeholder="Ex: Grande Formato">
-            </div>
-            <div class="campo">
-                <label for="preco">Preço Base Comercial (€)</label>
-                <input type="number" id="preco" step="0.01" placeholder="0.00">
-            </div>
-        </div>
-
-        <!-- Linha 3: Margem e IVA Fixo -->
-        <div class="grid-2">
-            <div class="campo">
-                <label for="margem">Margem Adicional Comercial (%)</label>
-                <input type="number" id="margem" value="0">
-            </div>
-            <div class="campo">
-                <label for="iva">Enquadramento de IVA</label>
-                <select id="iva" disabled style="cursor: not-allowed; background-color: #e2e8f0; color: #718096;">
-                    <option value="0">Isento (Art.º 53º)</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Ação Principal -->
-        <button id="btnGravar" class="btn-gravar" onclick="salvarProduto()">Gravar Alterações</button>
-
-        <!-- Zona de Backups -->
         <div class="zona-ficheiros">
             <button class="btn-ficheiro" onclick="exportarJSON()">💾 Guardar Backup (.json)</button>
             <button class="btn-ficheiro" onclick="document.getElementById('inputImportar').click()">📂 Importar Ficheiro</button>
@@ -131,7 +61,6 @@
         <a href="index.html" class="link-retorno">&larr; Voltar para a Calculadora Principal</a>
     </div>
 
-    <!-- Liga o HTML ao ficheiro de funções externo partilhado -->
     <script src="calculadora.js"></script>
 </body>
 </html>
