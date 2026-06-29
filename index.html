@@ -5,85 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculadora Comercial Multisserviços</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-    body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .calculadora-card { background: #fff; width: 100%; max-width: 560px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.08); padding: 35px; position: relative; border: 1px solid rgba(255,255,255,.8); }
-    h2 { color: #1a202c; font-size: 24px; font-weight: 700; margin-bottom: 8px; text-align: center; }
-    .subtitulo { color: #718096; font-size: 14px; text-align: center; margin-bottom: 18px; }
-    .estado { display:none; margin-bottom: 18px; padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; }
-    .estado.erro { background: #fff5f5; color:#9b2c2c; border-color:#fed7d7; }
-    .campo-grupo { margin-bottom: 18px; }
-    label { display: block; color: #4a5568; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-    select, input { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 15px; color: #2d3748; background-color: #f8fafc; outline: none; transition: all .2s ease; }
-    select:focus, input:focus { border-color: #3182ce; background-color: #fff; box-shadow: 0 0 0 3px rgba(66,153,225,.15); }
-    .dinamico { display:none; animation: fadeIn .2s ease-in-out; }
-    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
-    .checkbox-item { display:flex; align-items:center; gap:10px; margin-top:10px; font-size:14px; color:#4a5568; }
-    .checkbox-item input { width:auto; cursor:pointer; }
-    button.btn-calcular { width:100%; padding:14px; background:linear-gradient(135deg,#3182ce 0%,#2b6cb0 100%); color:#fff; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; box-shadow:0 4px 12px rgba(49,130,206,.3); margin-top:15px; transition:all .2s ease; }
-    button.btn-calcular:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(49,130,206,.4); }
-    .resultado-painel { margin-top:25px; padding:20px; background:#f7fafc; border-radius:12px; border:1px solid #edf2f7; display:none; }
-    .res-linha { display:flex; justify-content:space-between; gap:20px; margin-bottom:8px; font-size:14px; color:#4a5568; }
-    .res-linha span:last-child { font-weight:600; color:#2d3748; text-align:right; }
-    .divisor { height:1px; background-color:#e2e8f0; margin:12px 0; }
-    .total-linha { display:flex; justify-content:space-between; align-items:center; }
-    .total-label { font-size:16px; font-weight:700; color:#1a202c; }
-    .total-valor { font-size:24px; font-weight:800; color:#2f855a; }
-    .btn-print { width:100%; margin-top:15px; padding:10px; background:#4a5568; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; font-size:14px; }
-    .acesso-admin-invisivel { position:absolute; bottom:8px; right:8px; width:24px; height:24px; background:transparent; border:none; cursor:pointer; outline:none; opacity:.35; }
-    @keyframes fadeIn { from{opacity:0; transform:translateY(5px)} to{opacity:1; transform:translateY(0)} }
-    @media (max-width:520px){ .calculadora-card{padding:24px}.grid-2{grid-template-columns:1fr}.res-linha{display:block}.res-linha span{display:block;text-align:left!important} }
-    @media print { body{background:#fff!important;padding:0;min-height:auto}.calculadora-card{box-shadow:none!important;border:none!important;max-width:100%!important;padding:0!important} h2{text-align:left!important;font-size:28px!important;margin-bottom:5px!important}.subtitulo{text-align:left!important;margin-bottom:40px!important;color:#000!important}.campo-grupo,.btn-calcular,.acesso-admin-invisivel,.btn-print,.estado{display:none!important}.resultado-painel{display:block!important;margin-top:0!important;padding:0!important;background:transparent!important;border:none!important}.divisor{background:#000!important;height:2px!important;margin:20px 0!important}.total-valor{color:#000!important;font-size:28px!important} }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}body{background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}.calculadora-card{background:#fff;width:100%;max-width:760px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:32px;position:relative;border:1px solid rgba(255,255,255,.8)}h2{color:#1a202c;font-size:24px;font-weight:700;margin-bottom:8px;text-align:center}.subtitulo{color:#718096;font-size:14px;text-align:center;margin-bottom:18px}.estado{display:none;margin-bottom:18px;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:600;background:#ebf8ff;color:#2b6cb0;border:1px solid #bee3f8}.estado.erro{background:#fff5f5;color:#9b2c2c;border-color:#fed7d7}.campo-grupo{margin-bottom:16px}label{display:block;color:#4a5568;font-size:14px;font-weight:600;margin-bottom:8px}select,input,textarea{width:100%;padding:11px 14px;border:2px solid #e2e8f0;border-radius:8px;font-size:15px;color:#2d3748;background-color:#f8fafc;outline:none;transition:all .2s ease}select:focus,input:focus,textarea:focus{border-color:#3182ce;background-color:#fff;box-shadow:0 0 0 3px rgba(66,153,225,.15)}.dinamico{display:none;animation:fadeIn .2s ease-in-out}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.checkbox-item{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:14px;color:#4a5568}.checkbox-item input{width:auto;cursor:pointer}.btn-calcular{width:100%;padding:14px;background:linear-gradient(135deg,#3182ce 0%,#2b6cb0 100%);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(49,130,206,.3);margin-top:12px;transition:all .2s ease}.btn-calcular:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(49,130,206,.4)}.resultado-painel{margin-top:24px;padding:20px;background:#f7fafc;border-radius:12px;border:1px solid #edf2f7;display:none}.res-linha{display:flex;justify-content:space-between;gap:20px;margin-bottom:8px;font-size:14px;color:#4a5568}.res-linha span:last-child{font-weight:600;color:#2d3748;text-align:right}.divisor{height:1px;background:#e2e8f0;margin:12px 0}.total-linha{display:flex;justify-content:space-between;align-items:center}.total-label{font-size:16px;font-weight:700;color:#1a202c}.total-valor{font-size:26px;font-weight:800;color:#2f855a}.btn-print{width:100%;margin-top:15px;padding:10px;background:#4a5568;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:14px}.acesso-admin-invisivel{position:absolute;bottom:8px;right:8px;width:24px;height:24px;background:transparent;border:none;cursor:pointer;outline:none;opacity:.35}.orcamento-print{display:none}.small{font-size:12px;color:#718096;margin-top:6px}@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}@media(max-width:680px){.calculadora-card{padding:22px}.grid-2,.grid-3{grid-template-columns:1fr}.res-linha{display:block}.res-linha span{display:block;text-align:left!important}}@media print{body{background:#fff!important;padding:0;display:block}.calculadora-card{box-shadow:none!important;border:none!important;max-width:100%!important;padding:0!important}.no-print,h2,.subtitulo,.campo-grupo,.btn-calcular,.acesso-admin-invisivel,.btn-print,.estado{display:none!important}.resultado-painel{display:none!important}.orcamento-print{display:block!important;color:#111;font-size:12pt}.print-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:14px;margin-bottom:22px}.print-logo{max-width:180px;max-height:80px;object-fit:contain}.print-title{text-align:right}.print-title h1{font-size:24pt;margin-bottom:4px}.print-box{border:1px solid #bbb;border-radius:8px;padding:12px;margin-bottom:14px}.print-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.print-table{width:100%;border-collapse:collapse;margin-top:10px}.print-table th,.print-table td{border-bottom:1px solid #ddd;padding:10px;text-align:left}.print-table th:last-child,.print-table td:last-child{text-align:right}.print-total{font-size:20pt;font-weight:800;text-align:right;margin-top:16px}.print-footer{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-top:36px}.print-qr img{width:120px;height:120px}.small{color:#111}}
   </style>
 </head>
 <body>
   <div class="calculadora-card">
     <h2>Orçamento Comercial</h2>
-    <div class="subtitulo">Selecione o serviço e configure as opções</div>
+    <div class="subtitulo">Selecione o serviço, configure opções e gere o orçamento</div>
     <div id="estadoApp" class="estado"></div>
 
-    <div class="campo-grupo">
-      <label for="cmbProduto">Produto / Serviço</label>
-      <select id="cmbProduto" onchange="ajustarFormulario()"><option value="">A carregar...</option></select>
+    <div class="grid-3 no-print">
+      <div class="campo-grupo"><label for="clienteNome">Cliente</label><input id="clienteNome" placeholder="Nome do cliente"></div>
+      <div class="campo-grupo"><label for="clienteNif">NIF</label><input id="clienteNif" placeholder="Opcional"></div>
+      <div class="campo-grupo"><label for="dataOrcamento">Data</label><input type="date" id="dataOrcamento"></div>
     </div>
 
-    <div id="painelArea" class="dinamico">
-      <div class="grid-2 campo-grupo">
-        <div><label for="largura">Largura (metros)</label><input type="number" id="largura" step="0.01" min="0.01" placeholder="1.00"></div>
-        <div><label for="altura">Altura (metros)</label><input type="number" id="altura" step="0.01" min="0.01" placeholder="1.00"></div>
-      </div>
-      <div id="extrasVinil" class="campo-grupo" style="display:none;">
-        <label>Acabamentos Adicionais</label>
-        <div class="checkbox-item"><input type="checkbox" id="chkAplicar"> Aplicar vinil (+60% do valor do vinil)</div>
-        <div class="checkbox-item"><input type="checkbox" id="chkCorte"> Corte (+10€/m²)</div>
-        <div class="checkbox-item"><input type="checkbox" id="chkPelicula"> Película transferência (+8€/m²)</div>
-        <div class="checkbox-item"><input type="checkbox" id="chkLaminacao"> Laminação (+15€/m²)</div>
-      </div>
-    </div>
+    <div class="campo-grupo no-print"><label for="pesquisaProduto">Pesquisar produto</label><input id="pesquisaProduto" placeholder="Escreva para filtrar por nome ou categoria" oninput="desenharMenuDropdown(document.getElementById('cmbProduto'))"></div>
+    <div class="campo-grupo"><label for="cmbProduto">Produto / Serviço</label><select id="cmbProduto" onchange="ajustarFormulario()"><option value="">A carregar...</option></select></div>
 
+    <div id="painelArea" class="dinamico"><div class="grid-2 campo-grupo"><div><label for="largura">Largura (metros)</label><input type="number" id="largura" step="0.01" min="0.01" placeholder="1.00"></div><div><label for="altura">Altura (metros)</label><input type="number" id="altura" step="0.01" min="0.01" placeholder="1.00"></div></div><div id="extrasVinil" class="campo-grupo" style="display:none"><label>Acabamentos adicionais</label><div class="checkbox-item"><input type="checkbox" id="chkAplicar"> Aplicar vinil (+60% do valor do vinil)</div><div class="checkbox-item"><input type="checkbox" id="chkCorte"> Corte (+10€/m²)</div><div class="checkbox-item"><input type="checkbox" id="chkPelicula"> Película transferência (+8€/m²)</div><div class="checkbox-item"><input type="checkbox" id="chkLaminacao"> Laminação (+15€/m²)</div></div></div>
     <div id="painelQuantidade" class="dinamico campo-grupo"><label for="quantidade">Quantidade / Unidades</label><input type="number" id="quantidade" min="1" value="1"></div>
-    <div id="painelHoras" class="dinamico campo-grupo"><label for="horasFotografia">Número de Horas</label><input type="number" id="horasFotografia" min="1" value="1"></div>
-    <div id="painelDesign" class="dinamico campo-grupo"><label for="tempoDesign">Tempo de Trabalho</label><select id="tempoDesign"><option value="7.50">15 minutos — 7,50€</option><option value="20.00">30 minutos — 20,00€</option><option value="35.00">1 hora — 35,00€</option></select></div>
-    <div id="painelPvc" class="dinamico campo-grupo">
-      <label for="tipoAcabamentoPvc">Acabamento da Placa (Preço por m²)</label>
-      <select id="tipoAcabamentoPvc"><option value="so_pvc">Só PVC (sem impressão)</option><option value="pvc_vinil">PVC + Vinil impresso aplicado</option><option value="pvc_uv">PVC + Impressão UV direta</option></select>
-      <div class="grid-2" style="margin-top:15px;"><div><label for="pvcLargura">Largura (m)</label><input type="number" id="pvcLargura" step="0.01" min="0.01" placeholder="1.00"></div><div><label for="pvcAltura">Altura (m)</label><input type="number" id="pvcAltura" step="0.01" min="0.01" placeholder="1.00"></div></div>
-    </div>
-    <div id="painelCartoes" class="dinamico campo-grupo"><label for="cmbQuantidadeCartoes">Selecione o Pacote de Unidades</label><select id="cmbQuantidadeCartoes"></select></div>
+    <div id="painelHoras" class="dinamico campo-grupo"><label for="horasFotografia">Número de horas</label><input type="number" id="horasFotografia" min="1" value="1"></div>
+    <div id="painelDesign" class="dinamico campo-grupo"><label for="tempoDesign">Tempo de trabalho</label><select id="tempoDesign"><option value="7.50">15 minutos — 7,50€</option><option value="20.00">30 minutos — 20,00€</option><option value="35.00">1 hora — 35,00€</option></select></div>
+    <div id="painelPvc" class="dinamico campo-grupo"><label for="tipoAcabamentoPvc">Acabamento da placa</label><select id="tipoAcabamentoPvc"><option value="so_pvc">Só PVC</option><option value="pvc_vinil">PVC + Vinil impresso aplicado</option><option value="pvc_uv">PVC + Impressão UV direta</option></select><div class="grid-2" style="margin-top:14px"><div><label for="pvcLargura">Largura (m)</label><input type="number" id="pvcLargura" step="0.01" min="0.01" placeholder="1.00"></div><div><label for="pvcAltura">Altura (m)</label><input type="number" id="pvcAltura" step="0.01" min="0.01" placeholder="1.00"></div></div></div>
+    <div id="painelCartoes" class="dinamico campo-grupo"><label for="cmbQuantidadeCartoes">Pacote de unidades</label><select id="cmbQuantidadeCartoes"></select></div>
 
-    <button class="btn-calcular" onclick="calcularPrecoFinal()">Calcular Valor Comercial</button>
+    <button class="btn-calcular no-print" onclick="calcularPrecoFinal()">Calcular Valor Comercial</button>
 
-    <div class="resultado-painel" id="blocoResultado">
-      <div class="res-linha" style="margin-bottom:12px"><span>Artigo Orçamentado:</span><span id="resNomeProduto" style="color:#3182ce;font-weight:700!important">---</span></div>
-      <div class="res-linha"><span>Medida / Serviço Base:</span><span id="resDetalhe">---</span></div>
-      <div class="res-linha"><span>Subtotal:</span><span id="resSubtotal">0,00 €</span></div>
-      <div class="res-linha"><span>Enquadramento Fiscal:</span><span id="resIva">0,00 € (Art.º 53º)</span></div>
-      <div class="divisor"></div>
-      <div class="total-linha"><span class="total-label">Total a Cobrar:</span><span class="total-valor" id="resTotal">0,00 €</span></div>
-      <button class="btn-print" onclick="imprimirOrcamento()">🖨️ Imprimir Orçamento / Guardar PDF</button>
-    </div>
+    <div class="resultado-painel" id="blocoResultado"><div class="res-linha" style="margin-bottom:12px"><span>Artigo orçamentado:</span><span id="resNomeProduto" style="color:#3182ce;font-weight:700!important">---</span></div><div class="res-linha"><span>Medida / serviço base:</span><span id="resDetalhe">---</span></div><div class="res-linha"><span>Subtotal:</span><span id="resSubtotal">0,00 €</span></div><div class="res-linha"><span>Enquadramento fiscal:</span><span id="resIva">0,00 € (Art.º 53º)</span></div><div class="divisor"></div><div class="total-linha"><span class="total-label">Total a cobrar:</span><span class="total-valor" id="resTotal">0,00 €</span></div><button class="btn-print" onclick="imprimirOrcamento()">🖨️ Imprimir Orçamento / Guardar PDF</button></div>
 
-    <button class="acesso-admin-invisivel" onclick="window.location.href='backend.html'" title="Configurações">⚙️</button>
+    <div class="orcamento-print" id="orcamentoPrint"></div>
+    <button class="acesso-admin-invisivel no-print" onclick="window.location.href='backend.html'" title="Configurações">⚙️</button>
   </div>
   <script src="calculadora.js"></script>
 </body>
