@@ -212,3 +212,63 @@ window.addEventListener('focus', carDadosOnline);
 function carDadosOnline() {
     if (document.getElementById('cmbProduto')) carregarDadosOnline();
 }
+// ===================================================
+// 4. ADAPTAÇÃO DO PAINEL DE ADMINISTRAÇÃO (NUVEM)
+// ===================================================
+async function carregarDadosOnlineBackend() {
+    const lista = document.getElementById('listaProdutos');
+    if (!lista) return;
+
+    try {
+        // Se a lista de produtos ainda estiver vazia, vai buscar ao Google Sheets
+        if (produtos.length === 0) {
+            const resposta = await fetch(LINK_GOOGLE_SHEETS + "&cachebust=" + Date.now());
+            const textoCsv = await resposta.text();
+            produtos = converterCsvParaJson(textoCsv);
+        }
+        
+        // Desenha a lista de materiais no ecrã do Backend
+        atualizarListaBackendNuvem(lista);
+    } catch (erro) {
+        console.error("Erro ao carregar lista no backend:", erro);
+    }
+}
+
+function atualizarListaBackendNuvem(lista) {
+    lista.innerHTML = '';
+    
+    // Alerta informativo no topo da lista para o utilizador
+    const alerta = document.createElement('div');
+    alerta.style.cssText = "background: #ebf8ff; color: #2b6cb0; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; font-weight: 600; text-align: center; border: 1px solid #bee3f8;";
+    alerta.innerHTML = "💡 Os preços estão sincronizados com o Google Sheets. Altere os valores diretamente na sua folha de cálculo online para atualizar todos os telemóveis.";
+    lista.parentNode.insertBefore(alerta, lista);
+
+    produtos.forEach((p) => {
+        let precoExibicao = p.preco ? p.preco.toFixed(2) + "€" : 'Tabela complexa';
+        if(p.tipoCalculo === 'pvc_tabela') precoExibicao = "Preço por m² (Múltiplo)";
+        if(p.tipoCalculo === 'quantidade_degrau') precoExibicao = "Escalonado por pacotes";
+
+        lista.innerHTML += `
+            <li>
+                <div class="item-info">
+                    <span class="badge">${p.categoria}</span><br>
+                    <strong>${p.nome}</strong><br>
+                    <small style="color: #718096;">Valor Online: ${precoExibicao} | Isento (Art.º 53º)</small>
+                </div>
+                <div class="acoes">
+                    <button class="btn-editar" onclick="abrirGoogleSheets()" style="background: #cbd5e0; color: #2d3748;">Ver no Google</button>
+                </div>
+            </li>`;
+    });
+}
+
+function abrirGoogleSheets() {
+    // Abre a folha de cálculo oficial para que possa editar os preços rapidamente
+    window.open("https://google.com", "_blank");
+}
+
+// Atualização do gatilho de inicialização para incluir o Backend
+function carDadosOnline() {
+    if (document.getElementById('cmbProduto')) carregarDadosOnline();
+    if (document.getElementById('listaProdutos')) carregarDadosOnlineBackend();
+}
