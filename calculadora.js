@@ -343,3 +343,259 @@ document.addEventListener('visibilitychange', function() {
         inicializar();
     }
 });
+// ===================================================
+// 7. FUNÇÕES CRUD (BACKEND)
+// ===================================================
+
+// Adicionar novo item
+function adicionarItem() {
+    const categoria = document.getElementById('novoCategoria').value.trim();
+    const nome = document.getElementById('novoNome').value.trim();
+    const tipo = document.getElementById('novoTipo').value;
+    const preco = parseFloat(document.getElementById('novoPreco').value);
+    const margem = parseFloat(document.getElementById('novaMargem').value) || 0;
+
+    // Validações
+    if (!categoria) return alert('Por favor, insira uma categoria.');
+    if (!nome) return alert('Por favor, insira um nome para o produto.');
+    if (isNaN(preco) || preco < 0) return alert('Por favor, insira um preço válido.');
+
+    // Gerar ID (maior ID existente + 1)
+    const maxId = produtos.reduce((max, p) => Math.max(max, p.id), 0);
+    const novoId = maxId + 1;
+
+    const novoItem = {
+        id: novoId,
+        categoria: categoria,
+        nome: nome,
+        tipoCalculo: tipo,
+        preco: preco,
+        margem: margem,
+        iva: 0,
+        permiteExtras: tipo === 'area_com_extras'
+    };
+
+    // Adicionar tabelas complexas se necessário
+    if (tipo === 'pvc_tabela') {
+        novoItem.opcoes = { so_pvc: preco, pvc_vinil: preco * 1.5, pvc_uv: preco * 1.8 };
+    }
+    if (tipo === 'quantidade_degrau') {
+        novoItem.degraus = {
+            "100": preco,
+            "250": preco * 0.9,
+            "500": preco * 0.8,
+            "1000": preco * 0.7
+        };
+    }
+
+    // Adicionar ao array
+    produtos.push(novoItem);
+    produtosBackup = [...produtos];
+
+    // Atualizar UI
+    const lista = document.getElementById('listaProdutos');
+    if (lista) atualizarListaBackend(lista);
+
+    const select = document.getElementById('cmbProduto');
+    if (select) desenharMenuDropdown(select);
+
+    // Limpar formulário
+    document.getElementById('novoCategoria').value = '';
+    document.getElementById('novoNome').value = '';
+    document.getElementById('novoPreco').value = '';
+    document.getElementById('novaMargem').value = '0';
+
+    alert(`✅ Item "${nome}" adicionado com sucesso! (ID: ${novoId})`);
+}
+
+// Abrir modal para editar
+function abrirEdicao(id) {
+    const item = produtos.find(p => p.id === id);
+    if (!item) return alert('Item não encontrado.');
+
+    document.getElementById('editId').value = id;
+    document.getElementById('editCategoria').value = item.categoria;
+    document.getElementById('editNome').value = item.nome;
+    document.getElementById('editTipo').value = item.tipoCalculo;
+    document.getElementById('editPreco').value = item.preco;
+    document.getElementById('editMargem').value = item.margem;
+
+    document.getElementById('modalEdicao').classList.add('active');
+}
+
+// Salvar edição
+function salvarEdicao() {
+    const id = parseInt(document.getElementById('editId').value);
+    const item = produtos.find(p => p.id === id);
+    if (!item) return alert('Item não encontrado.');
+
+    const categoria = document.getElementById('editCategoria').value.trim();
+    const nome = document.getElementById('editNome').value.trim();
+    const tipo = document.getElementById('editTipo').value;
+    const preco = parseFloat(document.getElementById('editPreco').value);
+    const margem = parseFloat(document.getElementById('editMargem').value) || 0;
+
+    if (!categoria) return alert('Por favor, insira uma categoria.');
+    if (!nome) return alert('Por favor, insira um nome para o produto.');
+    if (isNaN(preco) || preco < 0) return alert('Por favor, insira um preço válido.');
+
+    // Atualizar dados
+    item.categoria = categoria;
+    item.nome = nome;
+    item.tipoCalculo = tipo;
+    item.preco = preco;
+    item.margem = margem;
+    item.permiteExtras = tipo === 'area_com_extras';
+
+    // Atualizar tabelas complexas
+    if (tipo === 'pvc_tabela') {
+        item.opcoes = { so_pvc: preco, pvc_vinil: preco * 1.5, pvc_uv: preco * 1.8 };
+    } else if (tipo === 'quantidade_degrau') {
+        item.degraus = {
+            "100": preco,
+            "250": preco * 0.9,
+            "500": preco * 0.8,
+            "1000": preco * 0.7
+        };
+    } else {
+        delete item.opcoes;
+        delete item.degraus;
+    }
+
+    produtosBackup = [...produtos];
+
+    // Atualizar UI
+    const lista = document.getElementById('listaProdutos');
+    if (lista) atualizarListaBackend(lista);
+
+    const select = document.getElementById('cmbProduto');
+    if (select) desenharMenuDropdown(select);
+
+    fecharModal();
+    alert(`✅ Item "${nome}" atualizado com sucesso!`);
+}
+
+// Apagar item
+function apagarItem(id) {
+    const item = produtos.find(p => p.id === id);
+    if (!item) return alert('Item não encontrado.');
+
+    if (!confirm(`Tem certeza que deseja apagar "${item.nome}"?`)) return;
+
+    produtos = produtos.filter(p => p.id !== id);
+    produtosBackup = [...produtos];
+
+    // Atualizar UI
+    const lista = document.getElementById('listaProdutos');
+    if (lista) atualizarListaBackend(lista);
+
+    const select = document.getElementById('cmbProduto');
+    if (select) desenharMenuDropdown(select);
+
+    alert(`🗑️ Item "${item.nome}" apagado com sucesso!`);
+}
+
+// Duplicar item
+function duplicarItem(id) {
+    const item = produtos.find(p => p.id === id);
+    if (!item) return alert('Item não encontrado.');
+
+    const maxId = produtos.reduce((max, p) => Math.max(max, p.id), 0);
+    const novoId = maxId + 1;
+
+    const novoItem = JSON.parse(JSON.stringify(item));
+    novoItem.id = novoId;
+    novoItem.nome = item.nome + ' (cópia)';
+
+    produtos.push(novoItem);
+    produtosBackup = [...produtos];
+
+    // Atualizar UI
+    const lista = document.getElementById('listaProdutos');
+    if (lista) atualizarListaBackend(lista);
+
+    const select = document.getElementById('cmbProduto');
+    if (select) desenharMenuDropdown(select);
+
+    alert(`📋 Item "${item.nome}" duplicado com sucesso!`);
+}
+
+// Fechar modal
+function fecharModal() {
+    document.getElementById('modalEdicao').classList.remove('active');
+}
+
+// Sincronizar com Google Sheets
+async function sincronizarGoogleSheets() {
+    if (!confirm('Isso irá recarregar os dados do Google Sheets. As alterações locais serão perdidas. Continuar?')) return;
+    
+    await carregarDadosOnline();
+    
+    const lista = document.getElementById('listaProdutos');
+    if (lista) atualizarListaBackend(lista);
+
+    const select = document.getElementById('cmbProduto');
+    if (select) desenharMenuDropdown(select);
+
+    alert('✅ Dados sincronizados com o Google Sheets!');
+}
+
+// ===================================================
+// 8. ATUALIZAR A FUNÇÃO DE LISTAGEM (com botões CRUD)
+// ===================================================
+// Substitua a função atualizarListaBackend por esta versão:
+
+function atualizarListaBackend(lista) {
+    const avisoAntigo = document.getElementById('avisoSincronizacao');
+    if (avisoAntigo) avisoAntigo.remove();
+
+    lista.innerHTML = '';
+
+    const alerta = document.createElement('div');
+    alerta.id = 'avisoSincronizacao';
+    alerta.style.cssText = "background: #ebf8ff; color: #2b6cb0; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; font-weight: 600; text-align: center; border: 1px solid #bee3f8;";
+    alerta.innerHTML = "💡 Os preços estão sincronizados com o Google Sheets. Altere os valores diretamente na sua folha de cálculo online para atualizar todos os telemóveis.";
+    lista.parentNode.insertBefore(alerta, lista);
+
+    if (produtos.length === 0) {
+        lista.innerHTML = '<li style="text-align: center; color: #718096; padding: 20px;">Nenhum item no catálogo. Adicione um novo item acima.</li>';
+        return;
+    }
+
+    produtos.forEach((p) => {
+        let precoExibicao = p.preco ? p.preco.toFixed(2) + "€" : 'Tabela complexa';
+        if(p.tipoCalculo === 'pvc_tabela') precoExibicao = "Preço por m² (Múltiplo)";
+        if(p.tipoCalculo === 'quantidade_degrau') precoExibicao = "Escalonado por pacotes";
+        if(p.tipoCalculo === 'horas_fotografia') {
+            precoExibicao = p.preco.toFixed(2) + "€/hora (base)";
+        }
+
+        const tipoLabels = {
+            'quantidade': '💰 Unitário',
+            'area': '📐 Área',
+            'area_com_extras': '📐 Área+Extras',
+            'horas_fotografia': '📷 Horas',
+            'tempo_design': '🎨 Design',
+            'pvc_tabela': '📋 PVC',
+            'quantidade_degrau': '📊 Escalonado'
+        };
+
+        lista.innerHTML += `
+            <li>
+                <div class="item-info">
+                    <div>
+                        <span class="badge">${p.categoria}</span>
+                        <span class="badge-tipo">${tipoLabels[p.tipoCalculo] || p.tipoCalculo}</span>
+                        <span style="font-size: 10px; color: #a0aec0;">ID: ${p.id}</span>
+                    </div>
+                    <strong>${p.nome}</strong><br>
+                    <small style="color: #718096;">Valor: ${precoExibicao} | Margem: ${p.margem}% | Isento (Art.º 53º)</small>
+                </div>
+                <div class="acoes">
+                    <button class="btn-acao btn-editar" onclick="abrirEdicao(${p.id})">✏️ Editar</button>
+                    <button class="btn-acao btn-duplicar" onclick="duplicarItem(${p.id})">📋 Duplicar</button>
+                    <button class="btn-acao btn-apagar" onclick="apagarItem(${p.id})">🗑️ Apagar</button>
+                </div>
+            </li>`;
+    });
+}
