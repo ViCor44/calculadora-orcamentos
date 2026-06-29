@@ -34,6 +34,7 @@ async function carregarDadosOnline() {
 }
 
 function converterCsvParaJson(csv) {
+    // Divide o ficheiro por linhas
     const linhas = csv.split("\n");
     const resultado = [];
     
@@ -41,25 +42,31 @@ function converterCsvParaJson(csv) {
         let linha = linhas[i].trim();
         if (!linha) continue;
         
-        // Divide o texto por vírgulas considerando possíveis aspas
-        const colunas = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        // CORREÇÃO DETETOR DE SEPARADOR: Deteta se o Google enviou o ficheiro com ; ou ,
+        const separador = linha.includes(";") ? ";" : ",";
+        
+        // Divide as colunas de forma limpa
+        const colunas = linha.split(separador);
         if (colunas.length < 5) continue;
 
         let idItem = parseInt(colunas[0]);
-        let tipoCalc = colunas[3].trim();
+        let tipoCalc = colunas[3].replace(/"/g, "").trim();
+
+        // Tratamento para números com vírgula decimal europeia (ex: 170,00 -> 170.00)
+        let precoLimpo = colunas[4].replace(/"/g, "").replace(",", ".").trim();
+        let margemLimpa = colunas[5].replace(/"/g, "").replace(",", ".").trim();
 
         let item = {
             "id": idItem,
             "categoria": colunas[1].replace(/"/g, "").trim(),
             "nome": colunas[2].replace(/"/g, "").trim(),
             "tipoCalculo": tipoCalc,
-            "preco": parseFloat(colunas[4]) || 0,
-            "margem": parseFloat(colunas[5]) || 0,
+            "preco": parseFloat(precoLimpo) || 0,
+            "margem": parseFloat(margemLimpa) || 0,
             "iva": 0,
             "permiteExtras": tipoCalc === "area_com_extras"
         };
 
-        // Injeta as sub-tabelas nas lógicas complexas
         if (tipoCalc === "pvc_tabela") item.opcoes = opcoesPvc[idItem];
         if (tipoCalc === "quantidade_degrau") item.degraus = degrausCartoes[idItem];
 
@@ -67,6 +74,7 @@ function converterCsvParaJson(csv) {
     }
     return resultado;
 }
+
 // ===================================================
 // 2. CONSTRUÇÃO VISUAL DINÂMICA DO FORMULÁRIO
 // ===================================================
