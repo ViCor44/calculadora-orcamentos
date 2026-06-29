@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Comercial Multisserviços</title>
     <style>
-        /* Reset de Estilos Básicos */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        
-        /* Fundo moderno com gradiente suave */
         body { 
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
             min-height: 100vh; 
@@ -17,8 +14,6 @@
             align-items: center; 
             padding: 20px;
         }
-
-        /* Cartão Principal da Calculadora */
         .calculadora-card { 
             background: #ffffff; 
             width: 100%; 
@@ -29,26 +24,16 @@
             position: relative; 
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
-
-        /* Títulos */
         h2 { color: #1a202c; font-size: 24px; font-weight: 700; margin-bottom: 8px; text-align: center; }
         .subtitulo { color: #718096; font-size: 14px; text-align: center; margin-bottom: 25px; }
-        
-        /* Elementos de Formulário */
         .campo-grupo { margin-bottom: 18px; }
         label { display: block; color: #4a5568; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
         select, input { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 15px; color: #2d3748; background-color: #f8fafc; outline: none; transition: all 0.2s ease; }
         select:focus, input:focus { border-color: #3182ce; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15); }
-        
-        /* Classes Auxiliares de Layout */
         .dinamico { display: none; animation: fadeIn 0.2s ease-in-out; } 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
-        /* Checkboxes para os extras de Vinil */
         .checkbox-item { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 14px; color: #4a5568; }
         .checkbox-item input { width: auto; height: auto; cursor: pointer; }
-        
-        /* Botão Principal */
         button.btn-calcular { 
             width: 100%; 
             padding: 14px; 
@@ -64,9 +49,6 @@
             transition: all 0.2s ease;
         }
         button.btn-calcular:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(49, 130, 206, 0.4); }
-        button.btn-calcular:active { transform: translateY(1px); }
-
-        /* Painel de Resultados */
         .resultado-painel { margin-top: 25px; padding: 20px; background: #f7fafc; border-radius: 12px; border: 1px solid #edf2f7; display: none; }
         .res-linha { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #4a5568; }
         .res-linha span:last-child { font-weight: 600; color: #2d3748; }
@@ -74,16 +56,11 @@
         .total-linha { display: flex; justify-content: space-between; align-items: center; }
         .total-label { font-size: 16px; font-weight: 700; color: #1a202c; }
         .total-valor { font-size: 24px; font-weight: 800; color: #2f855a; }
-        
-        /* Botão Escondido para ir ao Backend */
-        .acesso-admin-invisivel { position: absolute; bottom: 8px; right: 8px; width: 14px; height: 14px; background: transparent; border: none; cursor: default; outline: none; }
-        
+        .acesso-admin-invisivel { position: absolute; bottom: 8px; right: 8px; width: 14px; height: 14px; background: transparent; border: none; cursor: pointer; outline: none; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Regras exclusivas para quando se imprime ou guarda em PDF */
         @media print {
             body { background: #ffffff !important; padding: 0; min-height: auto; }
             .calculadora-card { box-shadow: none !important; border: none !important; max-width: 100% !important; padding: 0 !important; }
@@ -97,12 +74,10 @@
     </style>
 </head>
 <body>
-
     <div class="calculadora-card">
         <h2>Orçamento Comercial</h2>
         <div class="subtitulo">Selecione o serviço e configure as opções</div>
 
-        <!-- Menu de Seleção de Produtos Unificado -->
         <div class="campo-grupo">
             <label for="cmbProduto">Produto / Serviço</label>
             <select id="cmbProduto" onchange="ajustarFormulario()">
@@ -110,7 +85,6 @@
             </select>
         </div>
 
-        <!-- PAINEL DINÂMICO: MEDIDAS DE ÁREA (Vinil, Lonas, Posters) -->
         <div id="painelArea" class="dinamico">
             <div class="grid-2 campo-grupo">
                 <div>
@@ -122,7 +96,6 @@
                     <input type="number" id="altura" step="0.01" min="0.01" placeholder="1.00">
                 </div>
             </div>
-            <!-- Extras específicos para Vinil Impresso -->
             <div id="extrasVinil" class="campo-grupo" style="display:none;">
                 <label>Acabamentos Adicionais</label>
                 <div class="checkbox-item"><input type="checkbox" id="chkAplicar"> Aplicar vinil (+60% do valor do vinil)</div>
@@ -132,19 +105,16 @@
             </div>
         </div>
 
-        <!-- PAINEL DINÂMICO: QUANTIDADE SIMPLES (Fotocópias, Estampagem, Álbuns, Encadernação) -->
         <div id="painelQuantidade" class="dinamico campo-grupo">
             <label for="quantidade">Quantidade / Unidades</label>
             <input type="number" id="quantidade" min="1" value="1">
         </div>
 
-        <!-- PAINEL DINÂMICO: HORAS (Fotografia) -->
         <div id="painelHoras" class="dinamico campo-grupo">
             <label for="horasFotografia">Número de Horas</label>
             <input type="number" id="horasFotografia" min="1" value="1">
         </div>
 
-        <!-- PAINEL DINÂMICO: TEMPO DESIGN -->
         <div id="painelDesign" class="dinamico campo-grupo">
             <label for="tempoDesign">Tempo de Trabalho</label>
             <select id="tempoDesign">
@@ -154,7 +124,6 @@
             </select>
         </div>
 
-        <!-- PAINEL DINÂMICO: SELEÇÃO PVC -->
         <div id="painelPvc" class="dinamico campo-grupo">
             <label for="tipoAcabamentoPvc">Acabamento da Placa (Preço por m²)</label>
             <select id="tipoAcabamentoPvc">
@@ -174,24 +143,18 @@
             </div>
         </div>
 
-        <!-- PAINEL DINÂMICO: ESCALÃO DE CARTÕES -->
         <div id="painelCartoes" class="dinamico campo-grupo">
             <label for="cmbQuantidadeCartoes">Selecione o Pacote de Unidades</label>
             <select id="cmbQuantidadeCartoes"></select>
         </div>
 
-        <!-- Botão Calcular -->
         <button class="btn-calcular" onclick="calcularPrecoFinal()">Calcular Valor Comercial</button>
 
-        <!-- Bloco de Exibição de Resultados -->
-        <!-- Resultados -->
         <div class="resultado-painel" id="blocoResultado">
-            <!-- NOVO: Linha detalhada com o nome do produto/serviço escolhido -->
             <div class="res-linha" style="margin-bottom: 12px;">
                 <span>Artigo Orçamentado:</span>
                 <span id="resNomeProduto" style="color: #3182ce; font-weight: 700 !important;">---</span>
             </div>
-            
             <div class="res-linha">
                 <span>Medida / Serviço Base:</span>
                 <span id="resDetalhe">---</span>
@@ -209,25 +172,14 @@
                 <span class="total-label">Total a Cobrar:</span>
                 <span class="total-valor" id="resTotal">0.00€</span>
             </div>
-
-            <!-- Botão de Impressão -->
             <button onclick="imprimirOrcamento()" style="width: 100%; margin-top: 15px; padding: 10px; background: #4a5568; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px;">
                 🖨️ Imprimir Orçamento / Guardar PDF
             </button>
         </div>
 
-
-        <!-- Botão oculto no canto inferior direito para ir ao Backend -->
-        <button class="acesso-admin-invisivel" onclick="window.location.href='backend.html'" title="Configurações"></button>
+        <button class="acesso-admin-invisivel" onclick="window.location.href='backend.html'" title="Configurações">⚙️</button>
     </div>
 
     <script src="calculadora.js"></script>
-
 </body>
 </html>
-
-
-
-
-
-    
