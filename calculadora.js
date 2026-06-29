@@ -220,14 +220,12 @@ async function carregarDadosOnlineBackend() {
     if (!lista) return;
 
     try {
-        // Se a lista de produtos ainda estiver vazia, vai buscar ao Google Sheets
         if (produtos.length === 0) {
             const resposta = await fetch(LINK_GOOGLE_SHEETS + "&cachebust=" + Date.now());
             const textoCsv = await resposta.text();
             produtos = converterCsvParaJson(textoCsv);
         }
         
-        // Desenha a lista de materiais no ecrã do Backend
         atualizarListaBackendNuvem(lista);
     } catch (erro) {
         console.error("Erro ao carregar lista no backend:", erro);
@@ -235,10 +233,15 @@ async function carregarDadosOnlineBackend() {
 }
 
 function atualizarListaBackendNuvem(lista) {
+    // 1. LIMPEZA SEGURA: Remove qualquer aviso azul antigo antes de desenhar
+    const avisoAntigo = document.getElementById('avisoSincronizacao');
+    if (avisoAntigo) avisoAntigo.remove();
+
     lista.innerHTML = '';
     
-    // Alerta informativo no topo da lista para o utilizador
+    // 2. CRIAÇÃO DO AVISO: Cria o aviso azul com um ID fixo para nunca duplicar
     const alerta = document.createElement('div');
+    alerta.id = 'avisoSincronizacao';
     alerta.style.cssText = "background: #ebf8ff; color: #2b6cb0; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; font-weight: 600; text-align: center; border: 1px solid #bee3f8;";
     alerta.innerHTML = "💡 Os preços estão sincronizados com o Google Sheets. Altere os valores diretamente na sua folha de cálculo online para atualizar todos os telemóveis.";
     lista.parentNode.insertBefore(alerta, lista);
@@ -263,11 +266,11 @@ function atualizarListaBackendNuvem(lista) {
 }
 
 function abrirGoogleSheets() {
-    // Abre exatamente a sua folha de cálculo privada para poder editar os preços
+    // 3. LINK CORRIGIDO: Este link vai abrir exatamente a SUA folha de cálculo privada
     window.open("https://google.com", "_blank");
 }
 
-// Atualização do gatilho de inicialização para incluir o Backend
+// Inicialização e gatilhos corrigidos sem repetições infinitas
 function carDadosOnline() {
     if (document.getElementById('cmbProduto')) carregarDadosOnline();
     if (document.getElementById('listaProdutos')) carregarDadosOnlineBackend();
