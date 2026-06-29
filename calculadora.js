@@ -293,8 +293,17 @@ function importarJSON(input) {
     leitor.readAsText(input.files[0]);
 }
 
-window.onload = function() {
+// INICIALIZAÇÃO ATUALIZADA: Deteta sempre que a página fica visível no ecrã
+function inicializarPorPagina() {
     sincronizarMemoria();
     if (document.getElementById('cmbProduto')) carregarConfiguracoes();
     if (document.getElementById('listaProdutos')) atualizarListaBackend();
+}
+
+// Roda ao carregar a página pela primeira vez
+window.onload = inicializarPorPagina;
+
+// NOVO: Força a atualização automática quando volta para trás através do link
+window.onpageshow = function(event) {
+    inicializarPorPagina();
 };
