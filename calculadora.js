@@ -1,7 +1,7 @@
 // ===================================================
 // 1. BASE DE DADOS ONLINE (GOOGLE SHEETS) E SCRIPT
 // ===================================================
-const LINK_GOOGLE_SHEETS = "https://google.com";
+const LINK_GOOGLE_SHEETS = "https://docs.google.com/spreadsheets/d/18hBRKP0iEKiRgCRkICcTgWFCTougR_HcsXvcBkmD1ak/edit?usp=sharing";
 
 let produtos = [];
 
